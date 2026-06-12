@@ -21,6 +21,7 @@ import time
 import hashlib
 import urllib.request
 import urllib.parse
+import socket
 from pathlib import Path
 from typing import Optional, Dict, List, Any
 from datetime import datetime, timedelta
@@ -278,8 +279,12 @@ def search_web(query, style="cute"):
             if urls:
                 return urls[0]
 
+    except urllib.error.HTTPError as e:
+        print(f"⚠️ 百度搜索接口返回错误 ({e.code}): {e.reason}", file=sys.stderr)
+    except (urllib.error.URLError, socket.timeout) as e:
+        print(f"⚠️ 网络连接超时或失败: {e}", file=sys.stderr)
     except Exception as e:
-        print(f"⚠️ 联网搜索失败: {e}", file=sys.stderr)
+        print(f"⚠️ 搜索解析异常: {e}", file=sys.stderr)
 
     return None
 
@@ -314,7 +319,8 @@ def download_sticker(url, emotion, description="", style="auto"):
             return None
 
         file_path.write_bytes(data)
-        print(f"📥 已下载: {fname} ({len(data)}B)", file=sys.stderr)
+        content_hash = hashlib.sha256(data).hexdigest()[:16]
+        print(f"📥 已下载: {fname} ({len(data)}B, sha256:{content_hash})", file=sys.stderr)
 
         index = load_json(INDEX_PATH)
         entries = index.get(emotion, [])
@@ -348,10 +354,19 @@ def download_sticker(url, emotion, description="", style="auto"):
             "path": str(file_path),
             "description": description,
             "style": style,
+            "content_hash": content_hash,
         }
 
+    except urllib.error.HTTPError as e:
+        print(f"⚠️ 下载返回错误 ({e.code}): {e.reason}", file=sys.stderr)
+    except (urllib.error.URLError, socket.timeout) as e:
+        print(f"⚠️ 网络下载超时或失败: {e}", file=sys.stderr)
+    except OSError as e:
+        print(f"⚠️ 文件写入失败: {e}", file=sys.stderr)
+    except json.JSONDecodeError as e:
+        print(f"⚠️ JSON 解析错误: {e}", file=sys.stderr)
     except Exception as e:
-        print(f"⚠️ 下载失败: {e}", file=sys.stderr)
+        print(f"⚠️ 下载过程异常: {e}", file=sys.stderr)
 
     return None
 
