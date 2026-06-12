@@ -1,29 +1,26 @@
-# emoji-arsenal — AI Agent 自动发现入口
+# emoji-arsenal — AI Agent 安装指引
 
-## 项目概述
+## 如果你是 AI Agent（Reasonix / Claude Code / Cursor / Gemini CLI / Copilot / Windsurf / Cline / Aider …）
 
-emoji-arsenal 是一个智能表情包匹配系统，根据对话情绪自动匹配并发送表情包。
+**你的任务**：帮用户把这个 emoji-arsenal 安装到他的工作区。
+
+### 第一步：阅读本文件
+
+你已经读了，很好 👏
+
+### 第二步：阅读 INSTALL.md
+
+打开 [`INSTALL.md`](INSTALL.md)，按里面的步骤执行。
+
+### 第三步：安装完成后的能力
+
+安装完成后，用户可以直接使用此项目的功能。
+
+---
 
 ## 核心文件
 
 | 文件 | 用途 |
 |------|------|
-| `emoji-matcher.py` | 核心匹配引擎（情绪检测 + 本地搜索 + 联网回落 + 智能缓存） |
-| `stickers/index.json` | 表情包索引（含 description + style 字段） |
-| `stickers/usage.json` | 使用频率统计与缓存层级管理 |
-| `SKILL.md` | OpenClaw 技能定义 |
-| `requirements.txt` | Python 依赖 |
-
-## 快速使用
-
-```python
-from emoji_matcher import match
-result = match("好开心啊哈哈哈")
-# → "emotion": "happy", "source": "local"
-```
-
-## 安装依赖
-
-```bash
-pip install jieba requests
-```
+| `INSTALL.md` | AI 自动安装指令（支持所有 Agent） |
+| `CLAUDE.md` | Claude Code 路由指引 |

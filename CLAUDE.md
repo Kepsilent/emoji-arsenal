@@ -1,21 +1,12 @@
-# emoji-arsenal — Claude Code 路由
+# emoji-arsenal
 
-## 项目类型
-Python CLI 工具 / OpenClaw Skill
+这是 **Claude Code** 的路由文件。
 
-## 关键文件
-- `emoji-matcher.py` — 主程序，一切从此开始
-- `stickers/index.json` — 表情包索引
-- `stickers/usage.json` — 使用统计与缓存管理
+**关于本项目的安装、配置与开发规范，请务必阅读并严格遵循根目录下的 `AGENTS.md` 和 `INSTALL.md`。**
 
-## 常用命令
-```bash
-# 测试情绪匹配
-python emoji-matcher.py "好开心啊哈哈哈"
+---
 
-# 测试联网搜索
-python emoji-matcher.py "好生气啊烦死了"
-```
+## 快速入口
 
-## 架构说明
-用户消息 → 情绪检测 → 本地匹配（多样性轮选）→ 未命中则联网搜索 → 自动缓存
+- [AGENTS.md](AGENTS.md) — AI Agent 安装指引（含详尽说明）
+- [INSTALL.md](INSTALL.md) — 自动安装指令
