@@ -1,0 +1,23 @@
+{
+  "happy": [
+    {"file": "开心_咧嘴笑.png", "description": "咧嘴大笑的黄色笑脸，阳光灿烂", "style": "cute"}
+  ],
+  "sad": [
+    {"file": "哭泣_大哭.png", "description": "眼泪汪汪大哭的委屈表情", "style": "cute"}
+  ],
+  "love": [
+    {"file": "爱心_红心.png", "description": "一颗饱满的红色爱心", "style": "cute"}
+  ],
+  "angry": [],
+  "surprise": [],
+  "cute": [
+    {"file": "害羞_花痴.png", "description": "脸红害羞的花痴可爱表情", "style": "cute"}
+  ],
+  "approve": [
+    {"file": "点赞_赞.png", "description": "竖起大拇指点赞的手势", "style": "cute"}
+  ],
+  "goodbye": [],
+  "laugh": [
+    {"file": "笑哭_笑cry.png", "description": "笑哭到流泪的夸张表情", "style": "funny"}
+  ]
+}

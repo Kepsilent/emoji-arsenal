@@ -1,0 +1,14 @@
+{
+  "_last_updated": "",
+  "_last_cleanup": "",
+  "happy": {"count": 0, "last_used": "", "tier": "temporary"},
+  "sad": {"count": 0, "last_used": "", "tier": "temporary"},
+  "love": {"count": 0, "last_used": "", "tier": "temporary"},
+  "angry": {"count": 0, "last_used": "", "tier": "temporary"},
+  "surprise": {"count": 0, "last_used": "", "tier": "temporary"},
+  "cute": {"count": 0, "last_used": "", "tier": "temporary"},
+  "approve": {"count": 0, "last_used": "", "tier": "temporary"},
+  "goodbye": {"count": 0, "last_used": "", "tier": "temporary"},
+  "laugh": {"count": 0, "last_used": "", "tier": "temporary"},
+  "files": {}
+}
