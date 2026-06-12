@@ -48,4 +48,3 @@ result = match("好开心啊哈哈哈")
 ### 依赖
 
 - Python 3.8+
-- jieba（中文分词）

@@ -10,11 +10,11 @@ Usage:
     → {"emotion": "happy", "path": "stickers/开心_咧嘴笑.png", "source": "local"}
 
 Requirements:
-    pip install jieba
 """
 
 import json
 import os
+import random
 import re
 import sys
 import time
@@ -26,10 +26,7 @@ from pathlib import Path
 from typing import Optional, Dict, List, Any
 from datetime import datetime, timedelta
 
-try:
-    import jieba
-except ImportError:
-    jieba = None
+# jieba removed — keyword matching uses substring detection
 
 SKILL_DIR = Path(__file__).parent.resolve()
 INDEX_PATH = SKILL_DIR / "stickers" / "index.json"
@@ -40,7 +37,7 @@ EMOTIONS = {
     "happy":     ["开心", "哈哈", "笑嘻嘻", "高兴", "快乐", "兴奋", "嘻嘻"],
     "sad":       ["难过", "哭泣", "伤心", "呜呜", "emo", "哭"],
     "love":      ["爱你", "亲亲", "比心", "喜欢", "么么哒", "爱", "❤", "💕"],
-    "angry":     ["生气", "愤怒", "烦死了", "无语", "气"],
+    "angry":     ["生气", "愤怒", "烦死了", "无语"],
     "surprise":  ["震惊", "卧槽", "天哪", "不会吧"],
     "cute":      ["可爱", "卖萌", "害羞"],
     "approve":   ["点赞", "棒", "牛", "厉害", "666", "赞"],
@@ -83,15 +80,17 @@ def load_json(path):
     try:
         if path.exists():
             return json.loads(path.read_text(encoding="utf-8"))
-    except (json.JSONDecodeError, OSError):
-        pass
+    except json.JSONDecodeError as e:
+        print(f"⚠️ JSON 解析失败 ({path.name}): {e}", file=sys.stderr)
+    except OSError as e:
+        print(f"⚠️ 文件读取失败 ({path.name}): {e}", file=sys.stderr)
     return {}
 
 
 def save_json(path, data):
     tmp = path.with_suffix(".tmp")
     tmp.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
-    tmp.replace(path)
+    os.replace(tmp, path)
 
 
 def detect_emotion(text):
@@ -141,7 +140,16 @@ def search_local(emotion):
         return None
 
     available.sort(key=lambda x: x[0])
-    _, chosen_meta, chosen_path = available[0]
+    # Shuffle entries with same count for true diversity rotation
+    shuffled = [available[0]]
+    for i in range(1, len(available)):
+        if available[i][0] == shuffled[0][0]:
+            shuffled.append(available[i])
+        else:
+            break
+    if len(shuffled) > 1:
+        random.shuffle(shuffled)
+    _, chosen_meta, chosen_path = shuffled[0]
 
     return {
         "file": chosen_meta["file"],
@@ -318,6 +326,14 @@ def download_sticker(url, emotion, description="", style="auto"):
             print(f"⚠️ 下载文件太小 ({len(data)}B)，跳过", file=sys.stderr)
             return None
 
+        # Validate image magic bytes (prevent HTML/JSON being saved as images)
+        IMAGE_MAGIC = (
+            b'PNG', b'ÿØÿ', b'GIF8', b'RIFF', b'BM', b'   '
+        )
+        if not any(data.startswith(m) for m in IMAGE_MAGIC):
+            print(f"⚠️ 文件格式无效，不是图片 ({data[:20]!r})", file=sys.stderr)
+            return None
+
         file_path.write_bytes(data)
         content_hash = hashlib.sha256(data).hexdigest()[:16]
         print(f"📥 已下载: {fname} ({len(data)}B, sha256:{content_hash})", file=sys.stderr)
@@ -327,7 +343,7 @@ def download_sticker(url, emotion, description="", style="auto"):
         already_exists = False
         for entry in entries:
             if isinstance(entry, dict):
-                if entry.get("file") == fname or url_hash in entry.get("file", ""):
+                if entry.get("file") == fname or entry.get("content_hash") == content_hash:
                     already_exists = True
                     break
             elif isinstance(entry, str) and entry == fname:
@@ -372,7 +388,8 @@ def download_sticker(url, emotion, description="", style="auto"):
 
 def match(text):
     """Main entry: match text to sticker with local-first + web fallback."""
-    cleanup_cache()
+    if needs_cleanup():
+        cleanup_cache()
 
     emotion = detect_emotion(text)
     if not emotion:

@@ -60,4 +60,14 @@ cp -f .reasonix/skills/emoji-arsenal/SKILL.md ./
 
 ## Step 2: 验证安装
 
-确认运行后能正常工作。如果失败，重新执行安装流程。
+```bash
+python emoji-matcher.py "好开心啊哈哈哈"
+```
+
+预期输出：
+```
+✅ 匹配成功 [happy] (本地匹配)
+📁 stickers/开心_咧嘴笑.png
+```
+
+如果失败，重新执行安装流程。
